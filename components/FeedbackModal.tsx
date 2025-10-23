@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { XIcon, CheckCircleIcon } from './Icons';
+import { XIcon, CheckCircleIcon, SpinnerIcon } from './Icons';
 
 interface FeedbackModalProps {
   onClose: () => void;
@@ -9,15 +9,20 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose }) => {
   const [feedbackType, setFeedbackType] = useState('General');
   const [message, setMessage] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     console.log('Feedback Submitted:', { type: feedbackType, message });
-    setIsSubmitted(true);
     // Simulate API call and close after a delay
     setTimeout(() => {
-      onClose();
-    }, 2000);
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+      setTimeout(() => {
+        onClose();
+      }, 2000);
+    }, 1500);
   };
 
   // Handle Escape key to close modal
@@ -61,7 +66,8 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose }) => {
                   id="feedbackType"
                   value={feedbackType}
                   onChange={(e) => setFeedbackType(e.target.value)}
-                  className="w-full bg-gray-800 border-gray-600 rounded p-2 text-white"
+                  className="w-full bg-gray-800 border-gray-600 rounded p-2 text-white disabled:opacity-50"
+                  disabled={isSubmitting}
                 >
                   <option>General</option>
                   <option>Bug Report</option>
@@ -79,15 +85,24 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ onClose }) => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Tell us what you think..."
-                  className="w-full bg-gray-800 border-gray-600 rounded p-2 text-white resize-none"
+                  className="w-full bg-gray-800 border-gray-600 rounded p-2 text-white resize-none disabled:opacity-50"
                   required
+                  disabled={isSubmitting}
                 />
               </div>
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold py-3 rounded-full hover:from-orange-400 hover:to-amber-400 transition-all"
+                className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold py-3 rounded-full hover:from-orange-400 hover:to-amber-400 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                disabled={isSubmitting}
               >
-                Submit Feedback
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center">
+                    <SpinnerIcon className="w-5 h-5 mr-3" />
+                    Submitting...
+                  </span>
+                ) : (
+                  'Submit Feedback'
+                )}
               </button>
             </form>
           </>

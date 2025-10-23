@@ -1,10 +1,12 @@
 import React from 'react';
 import { useCart } from '../contexts/CartContext';
+import { useUser } from '../contexts/UserContext';
 import { XIcon } from './Icons';
 
 interface CartSummaryProps {
   isOpen: boolean;
   onClose: () => void;
+  onCheckout: () => void;
 }
 
 const formatPrice = (price: number) => {
@@ -15,13 +17,9 @@ const formatPrice = (price: number) => {
     }).format(price);
 };
 
-export const CartSummary: React.FC<CartSummaryProps> = ({ isOpen, onClose }) => {
+export const CartSummary: React.FC<CartSummaryProps> = ({ isOpen, onClose, onCheckout }) => {
   const { cartItems, removeFromCart, updateQuantity, subtotal } = useCart();
-
-  const handleCheckout = () => {
-    alert(`Checkout initiated for a total of ${formatPrice(subtotal)}.`);
-    onClose();
-  };
+  const { user } = useUser();
 
   return (
     <>
@@ -78,10 +76,10 @@ export const CartSummary: React.FC<CartSummaryProps> = ({ isOpen, onClose }) => 
               </div>
               
               <button 
-                onClick={handleCheckout} 
+                onClick={onCheckout} 
                 className="w-full mt-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold py-3 rounded-full text-lg hover:from-orange-400 hover:to-amber-400 transition-all"
               >
-                Checkout
+                {user ? 'Proceed to Checkout' : 'Sign In to Checkout'}
               </button>
             </div>
           )}

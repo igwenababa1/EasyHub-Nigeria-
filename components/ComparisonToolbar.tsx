@@ -14,7 +14,7 @@ export const ComparisonToolbar: React.FC<ComparisonToolbarProps> = ({ list, onCo
     <div className="fixed bottom-0 left-0 right-0 z-40 bg-gray-900/80 backdrop-blur-lg border-t border-gray-700 animate-slide-up">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <span className="font-bold text-lg hidden sm:inline">Comparing ({list.length}/3)</span>
+          <span className="font-bold text-lg hidden sm:inline">Comparing ({list.length})</span>
           <div className="flex items-center gap-3">
             {list.map(product => (
               <img 

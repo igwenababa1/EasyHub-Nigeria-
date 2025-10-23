@@ -9,11 +9,12 @@ interface EcosystemBuilderProps {
   phones: Product[];
   accessories: Product[];
   onClose: () => void;
+  initialPhone?: Product | null;
 }
 
-export const EcosystemBuilder: React.FC<EcosystemBuilderProps> = ({ phones, accessories, onClose }) => {
-  const [step, setStep] = useState(1);
-  const [selectedPhone, setSelectedPhone] = useState<Product | null>(null);
+export const EcosystemBuilder: React.FC<EcosystemBuilderProps> = ({ phones, accessories, onClose, initialPhone = null }) => {
+  const [step, setStep] = useState(initialPhone ? 2 : 1);
+  const [selectedPhone, setSelectedPhone] = useState<Product | null>(initialPhone);
   const [selectedAccessories, setSelectedAccessories] = useState<Product[]>([]);
   const { addToCart } = useCart();
   const { formatPrice, t } = useLocalization();

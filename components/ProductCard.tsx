@@ -1,7 +1,10 @@
 import React from 'react';
 import type { Product } from '../types';
-import { PlusIcon, CheckIcon } from './Icons';
+import { PlusIcon, CheckIcon, HeartIcon } from './Icons';
 import { useCart } from '../contexts/CartContext';
+import { useWishlist } from '../contexts/WishlistContext';
+import { useRating } from '../contexts/RatingContext';
+import { StarRating } from './StarRating';
 
 interface ProductCardProps {
   product: Product;
@@ -9,6 +12,7 @@ interface ProductCardProps {
   index: number;
   isCompared: boolean;
   onToggleCompare: () => void;
+  onAddToBundle: (product: Product) => void;
 }
 
 const formatPrice = (price: number) => {
@@ -19,9 +23,13 @@ const formatPrice = (price: number) => {
     }).format(price);
 };
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, index, isCompared, onToggleCompare }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, index, isCompared, onToggleCompare, onAddToBundle }) => {
   const { addToCart } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { getRatingInfo } = useRating();
   
+  const { average, count } = getRatingInfo(product.id);
+
   const handleCompareClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onToggleCompare();
@@ -30,6 +38,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, ind
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     addToCart(product);
+  };
+  
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isInWishlist(product.id)) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product);
+    }
+  };
+
+  const handleAddToBundle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onAddToBundle(product);
   };
 
   const conditionStyles = product.condition === 'Brand New' 
@@ -67,12 +89,38 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onSelect, ind
           <a href="#" onClick={(e) => { e.preventDefault(); onSelect(); }} className="hover:text-orange-500 transition-colors focus:outline-none focus:text-orange-500">{product.name}</a>
         </h3>
         {product.tagline && <p className="text-md text-orange-400 mt-1">{product.tagline}</p>}
+        
+        <div className="mt-2 flex items-center">
+            <StarRating rating={average} readOnly />
+            {count > 0 && (
+              <span className="text-xs text-gray-400 ml-2">({count} reviews)</span>
+            )}
+        </div>
+
         <p className="text-gray-400 mt-4 text-sm flex-grow">{product.description.substring(0, 100)}...</p>
         <div className="mt-6 flex justify-between items-center">
           <span className="text-2xl font-semibold">{formatPrice(product.price)}</span>
-          <button onClick={handleAddToCart} className="bg-orange-500/20 text-orange-300 hover:bg-orange-500/40 font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
-            Add to Cart
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+                onClick={handleToggleWishlist}
+                className={`p-2 rounded-full transition-colors duration-200 ${isInWishlist(product.id) ? 'text-orange-500' : 'text-gray-600 hover:text-orange-500'}`}
+                aria-label={isInWishlist(product.id) ? 'Remove from wishlist' : 'Add to wishlist'}
+            >
+                <HeartIcon className="w-6 h-6" filled={isInWishlist(product.id)} />
+            </button>
+            {(product.category === 'iPhone' || product.category === 'Samsung') && (
+              <button
+                onClick={handleAddToBundle}
+                className="bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/40 font-semibold py-2 px-3 rounded-lg transition-colors text-sm"
+                aria-label={`Add ${product.name} to a bundle`}
+              >
+                Add to Bundle
+              </button>
+            )}
+            <button onClick={handleAddToCart} className="bg-orange-500/20 text-orange-300 hover:bg-orange-500/40 font-semibold py-2 px-4 rounded-lg transition-colors text-sm">
+              Add to Cart
+            </button>
+          </div>
         </div>
       </div>
       <style>{`

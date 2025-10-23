@@ -10,18 +10,10 @@ const FeaturePoint: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 
 export const WhyChooseUs: React.FC = () => {
   return (
-    <section className="py-20 sm:py-32">
+    <section className="py-20 sm:py-32 bg-gradient-to-b from-black via-gray-900/50 to-black">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <div>
-            <img 
-              src="https://picsum.photos/seed/why-easyhub/800/600" 
-              alt="Happy customer using a smartphone" 
-              className="rounded-2xl shadow-lg"
-              loading="lazy"
-            />
-          </div>
-          <div>
+          <div className="order-2 lg:order-1">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Why Choose EasyHub?</h2>
             <p className="mt-4 text-lg text-gray-400">
               We are more than just a phone store. We are your trusted partner in navigating the digital world, providing quality you can feel and service you can rely on.
@@ -37,6 +29,14 @@ export const WhyChooseUs: React.FC = () => {
                     <strong>Multi-Branch Support:</strong> Visit us in Ikeja, Ikotun, or Victoria Island for in-person service and support.
                 </FeaturePoint>
             </ul>
+          </div>
+          <div className="order-1 lg:order-2">
+            <img 
+              src="https://images.unsplash.com/photo-1581347995956-397a6653f868?q=80&w=1920&auto=format&fit=crop" 
+              alt="Happy customer using a smartphone in a modern store" 
+              className="rounded-2xl shadow-lg shadow-orange-500/10"
+              loading="lazy"
+            />
           </div>
         </div>
       </div>

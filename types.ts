@@ -12,8 +12,23 @@ export interface Product {
   specs?: { [key: string]: string };
   warranty?: string;
   tagline?: string;
+  salesCount?: number;
 }
 
 export interface CartItem extends Product {
   quantity: number;
+}
+
+export interface Order {
+  id: string;
+  items: CartItem[];
+  subtotal: number;
+  date: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  orderHistory: Order[];
 }
